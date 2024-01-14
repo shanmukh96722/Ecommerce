@@ -3,22 +3,30 @@ const app = express()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
+const dotenv = require('dotenv')
+dotenv.config()
 
-const dburl = "mongodb+srv://20jr1a4450:20jr1a4450@cluster0.sanptxk.mongodb.net/?retryWrites=true&w=majority"
+// cros 
+app.use(cors())
+app.use(express.json())
 
-const access_token = "bcfea7d7fcfb59aece02211df3a1cfab5a4b4166c88e562448688c1a01062aef3c38b83c8e68b3e5b749bbfd7be0f4508af55084fbb64752e2ce0613f01252ca"
 
-const refresh_token = "8058379f48c5a31847358e11e0eb775e8bc679d38a6d637ad4dcc0cd38f745f95e3991285b32420b92acfeb260836f7e988e1e4cc83447fd90d9c434f7f23087"
 
-mongoose.connect(dburl).then(()=>{
-    console.log("connected to database")
-}).catch((e)=>console.log(e))
+const dburl=process.env.DB_URI
+const access_token = process.env.ACCESS_TOKEN
 
+// connect to database
+mongoose.connect(dburl).then(console.log("connected to database")).catch(console.error)
+
+//definition of schema
 require('./schema')
 
-const users = mongoose.model("userData")
 
-app.use(express.json())
+
+
+const users = mongoose.model("userData")
+//sign up
 app.post('/register',async(req,res)=>{
     const {name,email,password} = req.body
     const encryppassword = await bcrypt.hash(password,10)
@@ -38,6 +46,8 @@ app.post('/register',async(req,res)=>{
     }
 })
 
+
+// sign in
 app.post('/login',async(req,res)=>{
     const {email,password} = req.body
     const user =  await users.findOne({email})
@@ -57,7 +67,9 @@ app.post('/login',async(req,res)=>{
 })
 
 
+// items
+app.use('/',require('./routes/products'))
 
 app.listen(5000, ()=>{
-    console.log("server started")
+    console.log("connected server")
 })
