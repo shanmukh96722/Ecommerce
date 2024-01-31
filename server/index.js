@@ -14,7 +14,7 @@ app.use(express.json())
 
 
 const dburl=process.env.DB_URI
-const private_key= process.env.PRIVATE_KEY
+
 
 // connect to database
 mongoose.connect(dburl).then(console.log("connected to database")).catch(console.error)
@@ -38,7 +38,7 @@ app.post('/register',async(req,res)=>{
                 password : encryppassword
             }
         )
-        res.send({status :"ok"})
+        res.send({status : 200})
         
     } catch (error) {
         res.send({status : "error"})
@@ -52,15 +52,15 @@ app.post('/login',async(req,res)=>{
     const {email,password} = req.body
     const user =  await users.findOne({email})
     if(!user){
-      return   res.send({status:"no such user"})
+      return   res.send({status:"No such user"})
     }
     else{
         if(await bcrypt.compare(password,user.password)){
-            const token = jwt.sign({email},private_key)
-           return res.json({access_token : token})
+            const token = jwt.sign({id : user._id ,name : user.name},process.env.PRIVATE_KEY)
+           return res.send({status :  'Logged in successfully' ,token:token})
         }
         else{
-            return res.send({status:"invalid password"})
+            return res.send({status:"Invalid password"})
         }
     }
 })
@@ -68,6 +68,8 @@ app.post('/login',async(req,res)=>{
 
 // items
 app.use('/',require('./routes/products'))
+
+app.use('/:id',require('./routes/products'))
 
 app.listen(5000, ()=>{
     console.log("connected server")
