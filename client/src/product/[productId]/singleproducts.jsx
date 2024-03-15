@@ -4,23 +4,28 @@ import {Rating} from "@mui/material"
 import CountToggle from '../../components/CountToggle'
 import Home from '../../components/Home'
 import axios from 'axios'
+import LoadingPage from '../../components/Loading'
 const Singleproducts = () => {
   const { id } = useParams();
   const [item, setitem] = useState([]);
+  const [loading,setloading] = useState(false)
   const getData = async () => {
     try {
-      let response = await axios.get(`https://ecommerce-mjv6.vercel.app/${id}`);
+      setloading(true)
+      let response = await axios.get(`https://ecommerce-mjv6.vercel.app/product/${id}`);
       setitem(response.data);
+      setloading(false)
     } catch (error) {
       console.log(error)
     }
   };
   useEffect(() => {
     getData();
-  });
+    setloading(false)
+  },[]);
   return (
     <Home>
-    {item.length === 0 ? "Loding...." : <Render item={item}  />}
+    { loading!==true && item.length !== 0 ? <Render item={item}/> :  <LoadingPage/> }
     </Home>
   )
 }
@@ -30,7 +35,7 @@ const Render = (props) => {
   ,images} = props.item;
   const [amount, setamount] = useState(1);
   const setincrement = () => {
-    setamount(amount + 1);
+    amount <5 ? setamount(amount + 1) : setamount(5);
   };
   const setdecrement = () => {
     amount > 1 ? setamount(amount - 1) : setamount(1);

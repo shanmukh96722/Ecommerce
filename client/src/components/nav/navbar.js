@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom'
 import { CiShoppingCart } from "react-icons/ci";
 import { RiAccountCircleLine } from "react-icons/ri";
 
-const navbar = () => {
+const Navbar = ({log}) => {
+   
     return (
       <div className="sticky top-0 w-full z-30 shadow-sm bg-white "> 
         <nav className='py-3 border-b-[2px]'>
         <div className='grid grid-cols-13 items-center'>
             <div className='col-start-1 col-end-3 text-center'>
-            <Link to="/" className=' text-blue-600 font-extrabold'>E-shopify</Link>
+            <Link to="/" className=' text-blue-600 font-extrabold'>ShopSync</Link>
             </div>
                 
                 <div className=' col-start-3 col-end-9'>
@@ -18,18 +19,24 @@ const navbar = () => {
 
                 <div className='flex items-center gap-4 md:gap-9 col-start-10 col-end-12'>
 
-                    <div className='flex text-center justify-center min-w-24 h-9 rounded-md hover:bg-blue-600 hover:text-slate-50'>
-                        <Link to="/login" className='flex items-center gap-2'>                       
-                         <RiAccountCircleLine className='w-5 h-5' />Login
-                        </Link>
-                    </div>
-
-                    <div> 
-                        <Link to="/account" className='flex items-center'> 
-                            <RiAccountCircleLine className='h-7 w-7'/>
-                        </Link>
-                    </div>
-
+                    <div className='flex text-center p-2 justify-center items-center min-w-24 h-9 rounded-md hover:bg-blue-600 hover:text-slate-50 '>
+                        {log ? 
+                        <>
+                                <Link to="/account" className='flex item-center gap-3'>
+                                    <RiAccountCircleLine className='w-6 h-6'/>
+                                     My Account
+                                </Link>
+                         </>
+                         :
+                         <>
+                         <Link to="/login" className='flex items-center gap-2'> 
+                             <RiAccountCircleLine className='w-5 h-5'  /> 
+                                 Login
+                         </Link>
+                     </>
+                        }
+                       
+                    </div> 
                     <div>
                     <Link to="/cart">
                         <CiShoppingCart className='h-7 w-7'/>
@@ -42,4 +49,4 @@ const navbar = () => {
             </nav> 
     </div>
   )}
-export default navbar
+export default Navbar
