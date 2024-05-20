@@ -28,6 +28,10 @@ const cartSchema = mongoose.Schema({
       },
     },
   ],
+  totalamount: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Cart", cartSchema);
